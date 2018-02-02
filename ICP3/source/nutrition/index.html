@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nutrition</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.1/angular.min.js" type="application/javascript"></script>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+        .button2:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+
+        input[type=text] {
+            width: 200px;
+            height: 40px;
+
+        }
+       body{
+           background-color: whitesmoke;
+       }
+    </style>
+</head>
+<body>
+
+<div align="center">
+</br>
+    <div ng-app="app" ng-controller="myCtrl">
+
+</br>
+<label><h4>Enter the Product to show Information</h4><input type="text" ng-model="myItem" placeholder="E.g 1 large apple"></label>
+        </br>
+
+
+    <button class="button button2" id="btn" ng-click="findNutrition()"> show calories </button>
+    <div class="nutritionCss">
+        <p class="nutrition" ng-bind-html-unsafe="shownutrition.html"></p>
+    </div>
+</div>
+</div>
+</body>
+<script>
+    angular.module('app', []).controller('myCtrl', function($scope,$http) {
+        $scope.findNutrition = function(){
+            var item=$scope.myItem;
+            $http.get('https://api.edamam.com/api/nutrition-data?app_id=51b3b391&app_key=dbb68741e240bcff5bbdfa07bc731c59&ingr='+item).success(function(data){
+                console.log(data);
+                cal = data.calories;
+                wei = data.totalWeight;
+                var voice= item+ " has "+ cal+ "calories and the total weight is "+wei +"grams";
+
+                $scope.shownutrition = {
+                    html: "calories: " + cal + "</br>weight:" + wei+"</br></br>" +
+                    "<a href=\"https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?username=b234d9a3-d86a-4476-9c56-07173e317489&password=0pmyS3pDPqUv&text="+voice+"\"><img src='img/download.png' width=\"70\" height=\"75\" > </a>"
+                }
+
+            })
+        }
+
+
+
+    });
+
+</script>
+</html>
